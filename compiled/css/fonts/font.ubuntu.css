@@ -1,0 +1,178 @@
+/*
+    TimelineJS - ver. 2017-11-07-20-35-04 - 2017-11-07
+    Copyright (c) 2012-2016 Northwestern University
+    a project of the Northwestern University Knight Lab, originally created by Zach Wise
+    https://github.com/NUKnightLab/TimelineJS3
+    This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+    If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+/*@import url(//fonts.googleapis.com/css?family=Ubuntu:300,500,300italic);*/
+
+/* ubuntu-300 - latin */
+/* ubuntu-300 - latin */
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/ubuntu-v11-latin-300.eot'); /* IE9 Compat Modes */
+    src: local('Ubuntu Light'), local('Ubuntu-Light'),
+    url('../fonts/ubuntu-v11-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/ubuntu-v11-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-300.woff') format('woff'), /* Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('../fonts/ubuntu-v11-latin-300.svg#Ubuntu') format('svg'); /* Legacy iOS */
+}
+
+/* ubuntu-300italic - latin */
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: italic;
+    font-weight: 300;
+    src: url('../fonts/ubuntu-v11-latin-300italic.eot'); /* IE9 Compat Modes */
+    src: local('Ubuntu Light Italic'), local('Ubuntu-LightItalic'),
+    url('../fonts/ubuntu-v11-latin-300italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/ubuntu-v11-latin-300italic.woff2') format('woff2'), /* Super Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-300italic.woff') format('woff'), /* Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-300italic.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('../fonts/ubuntu-v11-latin-300italic.svg#Ubuntu') format('svg'); /* Legacy iOS */
+}
+
+/* ubuntu-regular - latin */
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/ubuntu-v11-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Ubuntu Regular'), local('Ubuntu-Regular'),
+    url('../fonts/ubuntu-v11-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/ubuntu-v11-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-regular.woff') format('woff'), /* Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('../fonts/ubuntu-v11-latin-regular.svg#Ubuntu') format('svg'); /* Legacy iOS */
+}
+
+/* ubuntu-500 - latin */
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/ubuntu-v11-latin-500.eot'); /* IE9 Compat Modes */
+    src: local('Ubuntu Medium'), local('Ubuntu-Medium'),
+    url('../fonts/ubuntu-v11-latin-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/ubuntu-v11-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-500.woff') format('woff'), /* Modern Browsers */
+    url('../fonts/ubuntu-v11-latin-500.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('../fonts/ubuntu-v11-latin-500.svg#Ubuntu') format('svg'); /* Legacy iOS */
+}
+
+
+
+
+
+
+
+.tl-timeline {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 300;
+    font-size: 1.0em;
+    line-height: 1.1em
+}
+
+.tl-timeline h1, .tl-timeline h2, .tl-timeline h3, .tl-timeline h4, .tl-timeline h5, .tl-timeline h6 {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 22px
+}
+
+.tl-timeline h2.tl-headline-title {
+    font-size: 48px;
+    line-height: 48px
+}
+
+.tl-timeline p {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-size: 1.0em;
+    line-height: 1.1em
+}
+
+.tl-timeline ul {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif
+}
+
+.tl-timeline .tl-media .tl-media-wikipedia h4 a, .tl-timeline .tl-media h4, .tl-timeline .tl-media h4 a {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 20px
+}
+
+.tl-timeline .tl-caption, .tl-timeline .tl-credit {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif
+}
+
+.tl-timeline .vcard {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif !important;
+    font-weight: normal !important
+}
+
+.tl-timeline .tl-slidenav-next, .tl-timeline .tl-slidenav-previous, .tl-timeline .tl-message, .tl-timeline .tl-timegroup-message {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 500;
+    text-transform: none
+}
+
+.tl-timeline .tl-slidenav-next .tl-slidenav-title, .tl-timeline .tl-slidenav-previous .tl-slidenav-title, .tl-timeline .tl-message .tl-slidenav-title, .tl-timeline .tl-timegroup-message .tl-slidenav-title {
+    line-height: 1.1em !important
+}
+
+.tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif !important;
+    font-weight: normal !important;
+    text-transform: none !important
+}
+
+.tl-timeline .tl-headline-date small, .tl-timeline h3.tl-headline-date small {
+    font-weight: normal !important
+}
+
+.tl-timeline .tl-timenav-slider {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 500
+}
+
+.tl-timeline .tl-timenav-slider h2.tl-headline {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 500;
+    text-transform: none
+}
+
+.tl-timeline .tl-timenav-slider .tl-timeaxis {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-weight: 500;
+    text-transform: none
+}
+
+.tl-timeline .tl-menubar {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif
+}
+
+.tl-timeline blockquote, .tl-timeline blockquote p {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.1
+}
+
+input[type="text"].editor-headline {
+    font-family: 'Ubuntu', 'Helvetica Neue', Helvetica, Arial, "MS Trebuchet", sans-serif;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 30px
+}
+
+.tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date {
+    margin-bottom: 5px !important
+}
