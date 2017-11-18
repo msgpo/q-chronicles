@@ -1,85 +1,105 @@
 {
-    "scale": "human",
-	"title": {
-		        "media": {
-		            "caption": "",
-		            "credit": "",
-		            "url": "",
-		            "thumb": 	""
-		        },
-	            "text": {
-	                "headline": "The Q Chronicles",
-	                "text": "Welcome Anon.<br><br>This first release covers all <strong>Q</strong> posts on /pol in relation to the CBTS threads. All data was pulled from the 4plebs JSON API and are included for references like unix timestamps.<br><br>Select a specific date from the menu or press <strong>Full Q</strong> if you have a decent quantum machine to render all the data at once.<br><br>You can use this timeline offline."
-	            }
-	    },
-    "events": [
-        {
-            "background": {
-                "color": "#000",
-                "opacity": 50,
-                "url": null
-            },
-            "start_date": {
-                "year":			"2017",
-                "month":		"10",
-                "day": 			"28",
-                "hour": 		"16",
-                "minute": 		"44",
-                "second": 		"28",
-                "millisecond": 	"",
-                "thumbnail": 	"",
-                "format": 		""
-            },
-            "text": {
-                "headline": "Q Coverage Starts",
-                "text": "First verified posts appeared on /pol."
-            }
-        },
-        {
-            "background": {
-                "color": "#000",
-                "opacity": 50,
-                "url": null
-            },
-            "start_date": {
-                "year":			"2017",
-                "month":		"11",
-                "day": 			"15",
-                "hour": 		"00",
-                "minute": 		"38",
-                "second": 		"48",
-                "millisecond": 	"",
-                "thumbnail": 	"",
-                "format": 		""
-            },
-            "text": {
-                "headline": "Current Last Known Post",
-                "text": "Last time Q posted on /pol."
-            }
-        },
- 	{
-            "background": {
-                "color": "#112",
-                "opacity": 50,
-                "url": null
-            },
-            "start_date": {
-                "year":                 "2017",
-                "month":                "11",
-                "day":                  "18",
-                "hour":                 "00",
-                "minute":               "00",
-                "second":               "00",
-                "millisecond":  "",
-                "thumbnail":    "",
-                "format":               ""
-            },
-            "text": {
-                "headline": "Release Of The Q Chronicles",
-                "text": "v0.1 (Quantum)<br>https://github.com/notripc0de/q-anon-timeline.git"
-            }
-        }
-
-      
-    ]
+  "scale": "human",
+  "title": {
+    "media": {
+      "caption": "",
+      "credit": "",
+      "url": "",
+      "thumb": ""
+    },
+    "text": {
+      "headline": "The Q Chronicles",
+      "text": "Welcome Anon.<br><br>This first release covers all <strong>Q</strong> posts on /pol in relation to the CBTS threads. All data was pulled from the 4plebs JSON API and are included for references like unix timestamps.<br><br>Select a specific date from the menu or press <strong>Full Q</strong> if you have a decent quantum machine to render all the data at once.<br><br>You can use this timeline offline."
+    }
+  },
+  "events": [
+    {
+      "background": {
+        "color": "#000",
+        "opacity": 50,
+        "url": null
+      },
+      "start_date": {
+        "year": "2017",
+        "month": "10",
+        "day": "28",
+        "hour": "16",
+        "minute": "44",
+        "second": "28",
+        "millisecond": "",
+        "thumbnail": "",
+        "format": ""
+      },
+      "text": {
+        "headline": "Q Coverage Starts",
+        "text": "First verified posts appeared on /pol."
+      }
+    },
+    {
+      "background": {
+        "color": "#000",
+        "opacity": 50,
+        "url": null
+      },
+      "start_date": {
+        "year": "2017",
+        "month": "11",
+        "day": "18",
+        "hour": "05",
+        "minute": "18",
+        "second": "29",
+        "millisecond": "",
+        "thumbnail": "",
+        "format": ""
+      },
+      "text": {
+        "headline": "Current Last Known Post",
+        "text": "Last time Q posted on /pol."
+      }
+    },
+    {
+      "background": {
+        "color": "#112",
+        "opacity": 50,
+        "url": null
+      },
+      "start_date": {
+        "year": "2017",
+        "month": "11",
+        "day": "18",
+        "hour": "00",
+        "minute": "00",
+        "second": "00",
+        "millisecond": "",
+        "thumbnail": "",
+        "format": ""
+      },
+      "text": {
+        "headline": "Release Of The Q Chronicles",
+        "text": "v0.1 (Quantum)<br>https://github.com/notripc0de/q-chronicles/releases"
+      }
+    },
+    {
+      "background": {
+        "color": "#122",
+        "opacity": 50,
+        "url": null
+      },
+      "start_date": {
+        "year": "2017",
+        "month": "11",
+        "day": "18",
+        "hour": "18",
+        "minute": "00",
+        "second": "00",
+        "millisecond": "",
+        "thumbnail": "",
+        "format": ""
+      },
+      "text": {
+        "headline": "Update The Q Chronicles",
+        "text": "v0.11 (Jacob)<br>https://github.com/notripc0de/q-chronicles/releases"
+      }
+    }
+  ]
 }

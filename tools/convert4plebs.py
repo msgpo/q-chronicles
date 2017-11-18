@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ---------------------------------------------------------
 # built for Q
-# version: 0.0.6
+# version: 0.0.7
 # ---------------------------------------------------------
 # code quality: none
 # code level: below normie, i dont like python
@@ -91,7 +91,7 @@ def process_4plebs_api(s,force=False):
         # sleep again to avoid ban
         time.sleep(8)
 
-def process_4plebs_timestamp(t):
+def process_4plebs_timestamp(t,msoffset):
     # get time in UTC
     utc_dt = datetime.datetime.utcfromtimestamp(t).replace(tzinfo=pytz.utc)
 
@@ -109,7 +109,7 @@ def process_4plebs_timestamp(t):
     sdate['minute']     = dt.strftime('%M')
     sdate['second']     = dt.strftime('%S')
     sdate['_identdate'] = dt.strftime('%Y%m%d')
-    #sdate['millisecond'] = ""
+    sdate['millisecond']= msoffset
     sdate['format']     = "'<small>'mmmm d',' yyyy'</small>' - HH:MM:ss TT"
     sdate['raw_utc']    = raw_utc_timestamp
 
@@ -128,7 +128,7 @@ def process_4plebs_post(p):
     post_media      = ""
 
     # get time in UTC
-    post_startDate    = process_4plebs_timestamp(post_timestamp)
+    post_startDate    = process_4plebs_timestamp(post_timestamp,"02")
     raw_utc_timestamp = post_startDate['raw_utc']
 
     # use raw comment
@@ -163,7 +163,7 @@ def process_4plebs_post(p):
     #post_headline   += p['name'] + ' ' + post_trip + '(ID: ' + p['poster_hash'] + ') ' + p['fourchan_date'] + ' No.' + post_num
     #post_headline   += '</div>'
     # add to html return
-    r['headline'] = post_title + ' ' + post_trip + p['fourchan_date']
+    r['headline'] = post_title + post_trip + ' ' + p['fourchan_date']
 
     # process media if set
     if p['media']:
@@ -226,6 +226,7 @@ def process_4plebs_post(p):
     rd['start_date']    = post_startDate
     rd['media']         = post_media
     rd['_identdate']    = post_startDate['_identdate']
+    rd['thread_num']    = p['thread_num']
     #d['background'] = {
     #                "color": "#202020",
     #                "opacity": 100,
@@ -234,75 +235,10 @@ def process_4plebs_post(p):
     #d['end_date'] = post_endDate
     return rd
 
-# =======================
-# Main
-# =======================
-htmlparser = HTMLParser()
 
-# read given servistate file (see chrome plugin how to)
-data = json.load(open(sys.argv[1]))
-
-# check if servistate file
-try:
-    check = data["servistate"]
-except KeyError:
-    sys.exit("error, json not servistate format")
-
-# init
-plebsUrls   = data["stores"]
-threads     = []  # just bunch of ints
-threads_info= []
-threads_daily= []
-events      = []
-eras        = []
-plebFiles   = []
-# some title json
-desciption  = """1. The purpose is to log events as they happen over the coming days. All of the shit going down in the last week is connected, the sealed indictments, the KSA purge and Lebanon tension, Trump donning a bomber jacket in the Pacific. We are here to record and analyze because no one else will be able to do a better job than /us/.<br>
-              2. Everyone is aware of the presence of b0ts and derailers in these threads. Focus, Believe, and make a choice right now: Do you Trust Trump?<br>
-              3. How would *you* succinctly break all this news to your blue-pilled friend? Does the initial message need to answer every detail? Bring them along for the ride and celebrations lads.<br>
-              4. Stick to the graphic and produce infographics for redpilling<br>
-              5. Shill are now trying to bake fake breads with dead link. REMEMBER to check for mold in new breads<br>
-              6. Get Comfy, Believe in your bones that we're riding the greatest timeline in existence.</p>"""
-newtitle    = { "text": { "headline": "The Q Chronicles", "text": desciption },"media": {"url": "img/cbts.jpg","thumb":   "img/cbts.jpg" }}
-newdata     = { "events": events, "title": newtitle, "eras": eras }
-newdailyindex = {}
-
-# iterate plebs urls and call api if no file(s)
-for plebs in plebsUrls:
-    if plebs["name"] == "requests":
-        for fetch in plebs["data"]:
-            s           = { "url": '', "file": '' }
-            s['url']    = fetch["url"]
-            s['file']   = "4plebs/" + fetch["name"] + ".json"
-            # call api
-            process_4plebs_api(s)
-            # build timeline data
-            plebFiles.append({ "name": fetch["name"], "file": s['file'] })
-
-# iterate plebs and process
-for plebs in plebFiles:
-    print "processing: ",plebs["name"]
-    data = json.load(open(plebs['file']))
-    # parse complete timeline
-    for npost in data['0']['posts']:
-        r = process_4plebs_post(npost)
-        r['group'] = "QAnon"
-        # add to global timeline
-        events.append(r)
-        # add threads
-        if npost['thread_num']:
-            item = int(npost['thread_num'])
-            if item not in threads:
-                threads.append(item)
-
-# build index before adding thread infos to events (identdate gets lost)
-for npost in events:
-    identdate = npost['_identdate']
-    newdailyindex[identdate] = {}
-
-# fetch threads
-for thread in threads:
-    print "processing: thread", thread
+# process single thread
+def process_4plebs_thread(s):
+    # init
     s         = { "url": '', "file": '' }
     s['url']  = "http://archive.4plebs.org/_/api/chan/thread/?board=pol&num=" + str(thread)
     s['file'] = "4plebs_threads/thread_" + str(thread) + ".json"
@@ -319,11 +255,10 @@ for thread in threads:
     thread_end   = ''
     # get op
     if data[str(thread)]["op"]:
-        print "thread OP okay ..."
         op = data[str(thread)]["op"]
         thread_start = op["timestamp"]
         # process t
-        te['start_date'] = process_4plebs_timestamp(int(thread_start))
+        te['start_date'] = process_4plebs_timestamp(int(thread_start),"00")
     else:
         print "thread OP NOT okay!"
 
@@ -331,9 +266,8 @@ for thread in threads:
     if data[str(thread)]["posts"]:
         posts = data[str(thread)]["posts"]
         posts_last = sorted(posts.keys())[-1]
-        print "last entry: ",posts_last
         thread_end = data[str(thread)]["posts"][str(posts_last)]["timestamp"]
-        te['end_date'] = process_4plebs_timestamp(int(thread_end))
+        te['end_date'] = process_4plebs_timestamp(int(thread_end),"00")
 
     # build some event entry context
     te_headline = ""
@@ -393,14 +327,88 @@ for thread in threads:
     }
     te['media']     = op_media
     te['text']      = re
-    te['_identdate']= te['start_date']['_identdate']
+    te['_identnum'] = thread
+
+    return te
+
+
+# =======================
+# Main
+# =======================
+htmlparser = HTMLParser()
+
+# read given servistate file (see chrome plugin how to)
+data = json.load(open(sys.argv[1]))
+
+# check if servistate file
+try:
+    check = data["servistate"]
+except KeyError:
+    sys.exit("error, json not servistate format")
+
+# init
+plebsUrls   = data["stores"]
+threads     = []  # just bunch of ints
+threads_info= []
+threads_daily= []
+events      = []
+events_daily= []
+eras        = []
+plebFiles   = []
+# some title json
+desciption  = """1. The purpose is to log events as they happen over the coming days. All of the shit going down in the last week is connected, the sealed indictments, the KSA purge and Lebanon tension, Trump donning a bomber jacket in the Pacific. We are here to record and analyze because no one else will be able to do a better job than /us/.<br>
+              2. Everyone is aware of the presence of b0ts and derailers in these threads. Focus, Believe, and make a choice right now: Do you Trust Trump?<br>
+              3. How would *you* succinctly break all this news to your blue-pilled friend? Does the initial message need to answer every detail? Bring them along for the ride and celebrations lads.<br>
+              4. Stick to the graphic and produce infographics for redpilling<br>
+              5. Shill are now trying to bake fake breads with dead link. REMEMBER to check for mold in new breads<br>
+              6. Get Comfy, Believe in your bones that we're riding the greatest timeline in existence.</p>"""
+newtitle    = { "text": { "headline": "The Q Chronicles", "text": desciption },"media": {"url": "img/cbts.jpg","thumb":   "img/cbts.jpg" }}
+newdata     = { "events": events, "title": newtitle, "eras": eras }
+newdailyindex = {}
+
+# iterate plebs urls and call api if no file(s)
+for plebs in plebsUrls:
+    if plebs["name"] == "requests":
+        for fetch in plebs["data"]:
+            s           = { "url": '', "file": '' }
+            s['url']    = fetch["url"]
+            s['file']   = "4plebs/" + fetch["name"] + ".json"
+            # call api
+            process_4plebs_api(s)
+            # build timeline data
+            plebFiles.append({ "name": fetch["name"], "file": s['file'] })
+
+# iterate plebs and process
+for plebs in plebFiles:
+    print "processing: ",plebs["name"]
+    data = json.load(open(plebs['file']))
+    # parse complete timeline
+    for npost in data['0']['posts']:
+        r = process_4plebs_post(npost)
+        r['group'] = "QAnon"
+        # add to global timeline
+        events.append(r)
+        # add to events_daily
+        events_daily.append(r)
+        # add threads
+        if npost['thread_num']:
+            item = int(npost['thread_num'])
+            if item not in threads:
+                threads.append(item)
+
+# build index before adding thread infos to events
+for npost in events:
+    identdate = npost['_identdate']
+    newdailyindex[identdate] = {}
+
+# fetch threads
+for thread in threads:
+    print "processing: thread", thread
+    r = process_4plebs_thread(thread)
     # add to global timeline
-    events.append(te)
-    # test
-    if te['start_date']['_identdate']:
-        idkey = te['start_date']['_identdate']
-        if idkey not in threads_info:
-            threads_info.append(te)
+    events.append(r)
+    # build thread info index
+    threads_info.append(r)
 
 
 # reparse result and sort per day
@@ -409,22 +417,19 @@ for key,value in newdailyindex.iteritems():
     # stupid iterate to events again
     events_per_day = []
     newdata_per_day = { "events": events_per_day}
-    # iterate posts again
-    for npost in events:
-        identdate = npost['_identdate']
+
+    # iterate posts (copied) again
+    for npost in events_daily:
+        identdate   = npost['_identdate']
+        identthread = npost['thread_num']
         if identdate == key:
             events_per_day.append(npost)
-
-    # iterate ctbs eras again
-    for nthread in threads:
-        print nthread
-        for ndata in threads_info:
-            thidentdate = ndata['_identdate']
-            print thidentdate
-            if thidentdate == key:
-                if ndata not in events_per_day:
-                    print "appending thread identdate ",thidentdate
-                    events_per_day.append(ndata)
+            # iterate threads
+            for ndata in threads_info:
+                thidentnum = ndata['_identnum']
+                if str(thidentnum) == str(identthread):
+                    if ndata not in events_per_day:
+                        events_per_day.append(ndata)
 
     # write to daily json
     rd = json.dumps(newdata_per_day,indent=2)
