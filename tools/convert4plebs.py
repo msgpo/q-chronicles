@@ -412,15 +412,15 @@ except KeyError:
     sys.exit("error, json not servistate format")
 
 # init
-plebsUrls   = data["stores"]
-threads     = []  # just bunch of ints
-threads_info= []
+plebsUrls    = data["stores"]
+threads      = []  # just bunch of ints
+threads_info = []
 threads_daily= []
-news        = []
-events      = []
-events_daily= []
-eras        = []
-plebFiles   = []
+news         = []
+events       = []
+events_daily = []
+eras         = []
+plebFiles    = []
 # some title json
 description  = """1. The purpose is to log events as they happen over the coming days. All of the shit going down in the last week is connected, the sealed indictments, the KSA purge and Lebanon tension, Trump donning a bomber jacket in the Pacific. We are here to record and analyze because no one else will be able to do a better job than /us/.<br>
               2. Everyone is aware of the presence of b0ts and derailers in these threads. Focus, Believe, and make a choice right now: Do you Trust Trump?<br>
@@ -501,7 +501,7 @@ for key,value in newdailyindex.iteritems():
             npresult = process_news_post(np)
             npresult['group'] = "NEWS"
             news.append(npresult)
-            events_per_day.append(npresult)
+            #events_per_day.append(npresult)
 
     # iterate posts (copied) again
     for npost in events_daily:

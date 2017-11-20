@@ -44,17 +44,17 @@
       "start_date": {
         "year": "2017",
         "month": "11",
-        "day": "18",
-        "hour": "05",
-        "minute": "18",
-        "second": "29",
+        "day": "20",
+        "hour": "04",
+        "minute": "05",
+        "second": "24",
         "millisecond": "",
         "thumbnail": "",
         "format": ""
       },
       "text": {
         "headline": "Current Last Known Post",
-        "text": "Last time Q posted on /pol."
+        "text": "Last time Q posted on /pol.<br><br>&raquo; http://archive.4plebs.org/pol/thread/150171127/#150173114"
       }
     },
     {
@@ -97,8 +97,30 @@
         "format": ""
       },
       "text": {
-        "headline": "Update The Q Chronicles",
+        "headline": "Update: The Q Chronicles",
         "text": "v0.11 (Jacob)<br>https://github.com/notripc0de/q-chronicles/releases"
+      }
+    },
+    {
+      "background": {
+        "color": "#122",
+        "opacity": 50,
+        "url": null
+      },
+      "start_date": {
+        "year": "2017",
+        "month": "11",
+        "day": "20",
+        "hour": "08",
+        "minute": "00",
+        "second": "00",
+        "millisecond": "",
+        "thumbnail": "",
+        "format": ""
+      },
+      "text": {
+        "headline": "Update: The Q Chronicles",
+        "text": "v0.12 (John)<br>https://github.com/notripc0de/q-chronicles/releases"
       }
     }
   ]
