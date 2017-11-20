@@ -79,7 +79,7 @@
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               Days 6-10 <span class="caret"></span></button>
           <ul id="button-subnav2" class="dropdown-menu" role="menu">
-              <li><a href="#" data-tl="q_day_20171102" >2rd November</a></li>
+              <li><a href="#" data-tl="q_day_20171102" >2nd November</a></li>
               <li><a href="#" data-tl="q_day_20171103" >3rd November</a></li>
               <li><a href="#" data-tl="q_day_20171104" >4th November</a></li>
               <li><a href="#" data-tl="q_day_20171105" >5th November</a></li>
@@ -107,7 +107,8 @@
           </ul>
       </div>
       <div id="button-navext" class="btn-group">
-          <button type="button" data-tl="q" class="btn btn-danger">Full Q</button>
+          <button type="button" data-tl="news" data-sf="2" class="btn btn-primary ">News</button>
+          <button type="button" data-tl="q" data-sf="2" class="btn btn-danger">Full Q</button>
       </div>
   </div>
   <div class="container-fluid">
@@ -125,9 +126,9 @@
         qTL = function(d) {
           timeline_q_daily = new TL.Timeline('timeline_q_daily', d, {
             timenav_position: "top",
-            scale_factor: 10,
-            initial_zoom : 0.125,
-            timenav_height_percentage: 25
+            //scale_factor: 10,
+            //initial_zoom : 0.125,
+            timenav_height_percentage: 35
           });
         }
       });
@@ -143,7 +144,7 @@
       });
 
       $(document).ready(function(){  
-        qTL('json/intro.json');  
+        qTL('json/intro.json');
       });
     </script>
     <noscript>You need JavaScript enabled</noscript>

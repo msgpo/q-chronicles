@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ---------------------------------------------------------
 # built for Q
-# version: 0.0.7
+# version: 0.0.8
 # ---------------------------------------------------------
 # code quality: none
 # code level: below normie, i dont like python
@@ -115,9 +115,48 @@ def process_4plebs_timestamp(t,msoffset):
 
     return sdate
 
+# single news
+def process_news_post(p):
+    # init
+    r  = { "headline": "", "text": "" }
+    rd = {"start_date": {}, "text": {} }
+    pm = { "url": "", "caption": "", "thumbnail": "", "link": "", "link_target": "_blank", "credit": "" }
+    post_timestamp  = p['timestamp']
+    # get time in UTC
+    post_startDate    = process_4plebs_timestamp(post_timestamp,"02")
+    try:
+        post_timestamp_end = p['timestamp_end']
+        rd['end_date'] = process_4plebs_timestamp(p['timestamp_end'],"00")
+    except KeyError:
+        pass
+
+    post_title        = p['title']
+    post_text         = p['text'] + "<br><br>" + "<i>Source: " + p['src'] + "</i><br>"
+    post_text        += p['url']
+    # event media
+    try:
+        pm['url']   = p['media_url']
+        rd['media'] = pm
+    except KeyError:
+        pass
+    #post_media['link']= "_link "# p['url']
+    # r
+    r['headline']     = post_title
+    r['text']         = post_text
+
+    # build return data
+    rd['text']          = r
+    rd['start_date']    = post_startDate
+    rd['_identdate']    = post_startDate['_identdate']
+    return rd
+
+def cleanhtml(raw_html):
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '', raw_html)
+  return cleantext
 
 # process single post
-def process_4plebs_post(p):
+def process_4plebs_post(p,rt):
     # init
     r               = { "headline": "", "text": "" }
     post_num        = p['num']
@@ -126,6 +165,8 @@ def process_4plebs_post(p):
     post_trip       = ""
     post_title      = ""
     post_media      = ""
+    post_news       = ""
+    post_news_head  = ""
 
     # get time in UTC
     post_startDate    = process_4plebs_timestamp(post_timestamp,"02")
@@ -138,9 +179,11 @@ def process_4plebs_post(p):
     # is comment?
     if post_comment_raw and len(post_comment_raw) >= 1:
         post_comment  = htmlparser.unescape(post_comment_raw)
+        clean_html    = cleanhtml(post_comment)
+        clean_html    = clean_html.replace("\n","")
         # build excerpt (not used now)
-        if len(post_comment_raw) >= 20:
-            post_excerpt     = post_comment[:20]
+        if len(clean_html) >= 50:
+            post_excerpt     = post_comment[:50]
         else:
             post_excerpt     = post_comment[:len(post_comment_raw)-1]
         # html linebreaks
@@ -200,12 +243,34 @@ def process_4plebs_post(p):
     post_srccontext    += '  &nbsp;JSON:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">' + url_json_call + '</a><br>'
     post_srccontext    += '</div>'
 
+    # news context (excerpt)
+    #post_news_head = post_title
+    #post_news   = '<div class="4plebs_contentbody_' + post_num + ' ">'
+    #post_news  += post_excerpt + " ... <br><br>"
+    #post_news  += '  <div class="4plebs_context_' + post_num + ' ">'
+    #post_news  += '    Post:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_archive_post + '">' + url_archive_post + '</a><br>'
+    #post_news  += '    Thread: <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">' + urL_archive_thread + '</a><br>'
+    #post_news  += '  </div>'
+    #post_news  += '</div>'
+    # news context (excerpt)
+    post_news_head = post_title
+    post_news   = post_comment
+    post_news  += '<br><br>&raquo; <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_archive_post + '">Post</a>'
+    post_news  += '  &raquo; <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">Thread</a>'
+
     # build html body
     post_commentbody   = '<div class="4plebs_contentbody_' + post_num + ' ">'
     post_commentbody  += post_comment
     post_commentbody  += '</div>'
-    # post_media_inl +
-    r['text'] = post_commentbody + "<br>" + post_srccontext
+    # post_media_inl
+    if rt == "detail":
+        r['text'] = post_commentbody + "<br>" + post_srccontext
+    elif rt == "news":
+        r['text'] = post_news
+        r['headline'] = post_news_head
+    else:
+        r['text'] = post_commentbody + "<br>" + post_srccontext
+
 
     # create dates
     #
@@ -351,19 +416,23 @@ plebsUrls   = data["stores"]
 threads     = []  # just bunch of ints
 threads_info= []
 threads_daily= []
+news        = []
 events      = []
 events_daily= []
 eras        = []
 plebFiles   = []
 # some title json
-desciption  = """1. The purpose is to log events as they happen over the coming days. All of the shit going down in the last week is connected, the sealed indictments, the KSA purge and Lebanon tension, Trump donning a bomber jacket in the Pacific. We are here to record and analyze because no one else will be able to do a better job than /us/.<br>
+description  = """1. The purpose is to log events as they happen over the coming days. All of the shit going down in the last week is connected, the sealed indictments, the KSA purge and Lebanon tension, Trump donning a bomber jacket in the Pacific. We are here to record and analyze because no one else will be able to do a better job than /us/.<br>
               2. Everyone is aware of the presence of b0ts and derailers in these threads. Focus, Believe, and make a choice right now: Do you Trust Trump?<br>
               3. How would *you* succinctly break all this news to your blue-pilled friend? Does the initial message need to answer every detail? Bring them along for the ride and celebrations lads.<br>
               4. Stick to the graphic and produce infographics for redpilling<br>
               5. Shill are now trying to bake fake breads with dead link. REMEMBER to check for mold in new breads<br>
-              6. Get Comfy, Believe in your bones that we're riding the greatest timeline in existence.</p>"""
-newtitle    = { "text": { "headline": "The Q Chronicles", "text": desciption },"media": {"url": "img/cbts.jpg","thumb":   "img/cbts.jpg" }}
+              6. Get Comfy, Believe in your bones that we're riding the greatest timeline in existence."""
+description2  = """Context of news and other events related to Q postings."""
+newtitle    = { "text": { "headline": "The Q Chronicles", "text": description },"media": {"url": "img/cbts.jpg","thumb":   "img/cbts.jpg" }}
+newstitle   = { "text": { "headline": "News vs. Q", "text": description2 }}
 newdata     = { "events": events, "title": newtitle, "eras": eras }
+newsdata    = { "events": news, "title": newstitle, "eras": eras }
 newdailyindex = {}
 
 # iterate plebs urls and call api if no file(s)
@@ -384,10 +453,12 @@ for plebs in plebFiles:
     data = json.load(open(plebs['file']))
     # parse complete timeline
     for npost in data['0']['posts']:
-        r = process_4plebs_post(npost)
+        r = process_4plebs_post(npost,"detail")
+        n = process_4plebs_post(npost,"news")
         r['group'] = "QAnon"
         # add to global timeline
         events.append(r)
+        news.append(n)
         # add to events_daily
         events_daily.append(r)
         # add threads
@@ -414,9 +485,23 @@ for thread in threads:
 # reparse result and sort per day
 for key,value in newdailyindex.iteritems():
     f = "compiled/json/q_day_"+key+".json"
+    n = "data_news/news-"+key+".json"
+    nexists = False
+    npdata  = ''
+    npresult= ''
+
     # stupid iterate to events again
     events_per_day = []
     newdata_per_day = { "events": events_per_day}
+
+    if os.path.exists(n):
+        fexists = True
+        npdata  = json.load(open(n))
+        for np in npdata['news']:
+            npresult = process_news_post(np)
+            npresult['group'] = "NEWS"
+            news.append(npresult)
+            events_per_day.append(npresult)
 
     # iterate posts (copied) again
     for npost in events_daily:
@@ -432,7 +517,7 @@ for key,value in newdailyindex.iteritems():
                         events_per_day.append(ndata)
 
     # write to daily json
-    rd = json.dumps(newdata_per_day,indent=2)
+    rd = json.dumps(newdata_per_day)
     fh = open(f, 'w')
     fh.write(rd)
     fh.close()
@@ -440,7 +525,15 @@ for key,value in newdailyindex.iteritems():
 
 # save complete timeline
 f  = "compiled/json/q.json"
-rd = json.dumps(newdata,indent=2)
+rd = json.dumps(newdata)
+fh = open(f, 'w')
+fh.write(rd)
+fh.close()
+print "wrote:",f
+
+# save news timeline
+f  = "compiled/json/news.json"
+rd = json.dumps(newsdata)
 fh = open(f, 'w')
 fh.write(rd)
 fh.close()
