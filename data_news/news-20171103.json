@@ -1,0 +1,28 @@
+{
+  "news": [
+      {
+        "timestamp": 1509738037,
+        "src": "4CHAN",
+        "url": "http://archive.4plebs.org/pol/thread/147767118/#147767653",
+        "title": "Wikileaks currently under DDoS",
+        "text": "PriIntelANON !C5Eg6mdVac ID:j0fe+WJW Fri 03 Nov 2017 15:40:37 No.147767653 <br><br>Wikileaks currently under DDoS"
+      },
+    {
+      "timestamp": 1509727260,
+      "src": "FOXNEWS",
+      "url": "http://www.foxnews.com/us/2017/11/03/playboy-models-among-3-seeking-27m-say-soros-fund-manager-raped-beat-them.html",
+      "title": "Soros fund manager raped, beat Playboy models, $27M lawsuit alleges",
+      "text": "Two Playboy Playmates and a third woman have filed a lawsuit seeking $27 million, alleging a former fund manager for billionaire George Soros raped and beat them in a New York City penthouse described as a dungeon."
+    },
+    {
+      "timestamp": 1509729540,
+      "src": "USA TODAY",
+      "url": "https://www.usatoday.com/story/news/world/2017/11/03/u-s-military-carries-out-1st-airstrikes-against-isis-fighters-somalia/829704001/",
+      "title": "U.S. military carries out first airstrikes against ISIS fighters in Somalia",
+      "text": "MOGADISHU, Somalia — The U.S. military for the first time has conducted two airstrikes against Islamic State group fighters in Somalia, where the group is a growing presence in a country long threatened by the al-Qaeda-linked extremist group al-Shabab."
+    }
+    ],
+  "meta": {
+    "total_found": 0
+  }
+}

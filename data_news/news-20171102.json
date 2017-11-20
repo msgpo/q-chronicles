@@ -1,0 +1,22 @@
+{
+  "news": [
+      {
+        "timestamp": 1509612000,
+        "src": "ZERO HEDGE",
+        "url": "http://www.zerohedge.com/news/2017-11-01/twitter-admits-it-buried-leaked-clinton-email-tweets-last-two-months-campaign",
+        "title": "Twitter Admits It Buried \"Podesta Email\", DNC Tweets Ahead Of The Presidential Election",
+        "text": "It was approximately one year ago, when angry tweeters alleged that Jack Dorsey et al., were purposefully censoring and \"suppressing\" certain content on Twitter, namely anything to do with the leaked DNC and John Podesta emails, as well as hashtags critical of Hillary Clinton while \"shadow-banning\" pro-Donald Trump content. We can now confirm that at least one part of the above was true, because during today's Senate hearing, Twitter admitted it \"buried\", which is another word for censored, significant portions of tweets related to hacked emails from the Democratic National Committee and Clinton campaign chair John Podesta in the months heading into the 2016 presidential campaign."
+      },
+    {
+      "timestamp": 1509663120,
+      "timestamp_end": 1509663780,
+      "src": "ZERO HEDGE",
+      "url": "http://www.zerohedge.com/news/2017-11-02/trumps-twitter-account-disappeaers-10-minutes-and-media-loses-its-mind",
+      "title": "Twitter Admits Trump Account Was Suspended By Departing Employee",
+      "text": "The President's twitter account disappeared shortly before 7 pm Thursday and was unavailable for just over ten minutes, providing the error message that the user \"does not exist.\" But by 7:03 pm, it had been restored."
+    }
+    ],
+  "meta": {
+    "total_found": 0
+  }
+}

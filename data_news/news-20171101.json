@@ -1,0 +1,15 @@
+{
+  "news": [
+      {
+        "timestamp": 1509574620,
+        "src": "THE DENVER POST",
+        "__media_url": "https://en.wikipedia.org/wiki/Thornton_shooting",
+        "url": "http://www.denverpost.com/2017/11/01/thornton-shooting-walmart/",
+        "title": "Three dead in shooting at Walmart in Thornton; gunman at large",
+        "text": "Two men and a woman are dead after a shooting early Wednesday evening inside the Walmart Supercenter at 9901 Grant St. in Thornton, police said. Police said the gunman is at large."
+      }
+    ],
+  "meta": {
+    "total_found": 0
+  }
+}

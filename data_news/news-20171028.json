@@ -1,0 +1,15 @@
+{
+  "news": [
+      {
+        "timestamp": 1508817600,
+        "timestamp_end": 1509508800,
+        "src": "USSTRATCOM",
+        "url": "http://www.stratcom.mil/Media/News/News-Article-View/Article/993879/exercise-global-thunder-17-concludes/",
+        "title": "Exercise Global Thunder 17",
+        "text": "Exercise Global Thunder 17, an annual command post and field training exercise, concluded Oct. 31.<br><br>U.S. Strategic Command (USSTRATCOM), in coordination with U.S. and partner nation government agencies, conducted the exercise, which began Oct. 24, to train USSTRATCOM forces and assess joint operational readiness across all of the command’s Unified Command Plan-assigned mission areas."
+      }
+    ],
+  "meta": {
+    "total_found": 0
+  }
+}

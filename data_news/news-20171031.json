@@ -1,0 +1,49 @@
+{
+  "news": [
+      {
+        "timestamp": 1509422400,
+        "timestamp_end": 1509508799,
+        "src": "REUTERS",
+        "__media_url": "https://en.wikipedia.org/wiki/Punggye-ri_Nuclear_Test_Site_tunnel_collapse",
+        "url": "https://www.reuters.com/article/us-northkorea-missiles-tunnel/tunnel-collapse-may-have-killed-200-after-north-korea-nuclear-test-japanese-broadcaster-idUSKBN1D018L",
+        "title": "Tunnel collapse may have killed 200 after North Korea nuclear test: Japanese broadcaster",
+        "text": "A tunnel at North Korea’s nuclear test site collapsed after Pyongyang’s sixth atomic test in September, possibly killing more than 200 people, Japanese broadcaster TV Asahi said on Tuesday, citing unnamed sources familiar with the situation."
+      },
+      {
+        "timestamp": 1509422400,
+        "timestamp_end": 1509508799,
+        "src": "THE WASHINGTON POST",
+        "url": "https://www.washingtonpost.com/news/the-switch/wp/2017/10/31/facebook-google-and-twitter-are-set-to-testify-on-capitol-hill-heres-what-to-expect/",
+        "title": "Facebook, Google and Twitter testified on Capitol Hill. Here’s what they said.",
+        "text": "Lawyers from Facebook, Google and Twitter are testifying on Capitol Hill Tuesday afternoon amid mounting political pressure to fully investigate Russian efforts to influence the 2016 U.S. presidential campaign and reveal publicly what they find."
+      },
+      {
+        "timestamp": 1509476700,
+        "timestamp_end": 1509477000,
+        "src": "THE GUARDIAN",
+        "__media_url": "https://en.wikipedia.org/wiki/2017_New_York_City_truck_attack",
+        "url": "https://www.theguardian.com/us-news/2017/oct/31/new-york-police-shooting-manhattan",
+        "title": "Eight people killed in New York 'act of terror' after truck drives on to bike path",
+        "text": "Eight people have been killed and more than a dozen injured after a man drove a truck nearly a mile down a bike path in lower Manhattan on Tuesday, striking pedestrians, cyclists and a school bus."
+      },
+      {
+        "timestamp": 1509505020,
+        "src": "TWITTER",
+        "_-media_url": "https://twitter.com/JulianAssange/status/925481913522855936",
+        "url": "https://twitter.com/JulianAssange/status/925481913522855936",
+        "title": "Assange call's out CIA for funding terror",
+        "text": "If the CIA spent more time investigating terrorists and less time training and arming them we might not have had today's truck attack in New York."
+      },
+      {
+        "timestamp": 1509471180,
+        "src": "CNN",
+        "__media_url": "http://i2.cdn.turner.com/money/dam/assets/161011164657-donna-brazile-780x439.jpg",
+        "url": "http://money.cnn.com/2016/10/31/media/donna-brazile-cnn-resignation/index.html",
+        "title": "Donna Brazile out at CNN amid leaks to Clinton campaign",
+        "text": "Donna Brazile, the acting chairwoman of the Democratic National Committee, resigned from her role as a CNN contributor earlier this month."
+      }
+    ],
+  "meta": {
+    "total_found": 0
+  }
+}
