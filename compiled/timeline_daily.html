@@ -7,11 +7,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" href="css/timeline.css?v1">
-    <link rel="stylesheet" href="css/fonts/font.ubuntu.css?v1">
-    <link rel="stylesheet" href="css/bootstrap.min.css?v1">
-    <script src="js/jquery.min.js?v1"></script>
-    <script src="js/bootstrap.min.js?v1"></script>
+    <link rel="stylesheet" href="css/timeline.css?v13">
+    <link rel="stylesheet" href="css/fonts/font.ubuntu.css?v13">
+    <link rel="stylesheet" href="css/bootstrap.min.css?v13">
+    <script src="js/jquery.min.js?v13"></script>
+    <script src="js/bootstrap.min.js?v13"></script>
     <style>
       html, body {
         height:100%;
@@ -114,6 +114,7 @@
               <li><a href="#" data-tl="q_day_20171115" >15th November</a></li>
               <li><a href="#" data-tl="q_day_20171118" >18th November</a></li>
               <li><a href="#" data-tl="q_day_20171120" >20th November</a></li>
+              <!-- li><a href="#" data-tl="q_day_20171121" >21st November</a></li //-->
           </ul>
       </div>
       <div id="button-navext" class="btn-group">
@@ -145,16 +146,16 @@
 
       $('#button-nav, #button-navext').on('click','button', function (evt) {
         var d = $(this).data('tl');
-        qTL("json/" + d + ".json?v=12");
+        qTL("json/" + d + ".json?v=13");
       });
 
       $('#button-subnav1, #button-subnav2, #button-subnav3, #button-subnav4').on('click','a', function (evt) {
         var d = $(this).data('tl');
-        qTL("json/" + d + ".json?v=12");
+        qTL("json/" + d + ".json?v=13");
       });
 
       $(document).ready(function(){  
-        qTL('json/intro.json?v=12');
+        qTL('json/intro.json?v=13');
       });
     </script>
     <noscript>You need JavaScript enabled</noscript>
