@@ -223,6 +223,7 @@ def process_4plebs_post(p,rt):
         post_comment     = post_comment.replace("\n","<br>")
     else:
         post_comment     = ""
+        post_excerpt     = "..."
 
     # post tripper
     if p['trip']:
@@ -242,12 +243,12 @@ def process_4plebs_post(p,rt):
     #post_headline   += '</div>'
     # add to html return
     post_headline  = '<div class="4plebs_headline">' + p['name'] + ' ' + post_trip + ' (ID: ' + p['poster_hash'] + ') ' + ' No.' + post_num + ' ' + post_country + '</div>'
-    post_comment  = post_headline + post_comment
 
 
     r['headline'] = post_excerpt #post_trip + ' ' + p['fourchan_date']
 
     # process media if set
+    post_media_inl = ""
     if p['media']:
         media           = p['media']
         media_link      = urllib.unquote(urllib.unquote(media['media_link']))
@@ -262,10 +263,12 @@ def process_4plebs_post(p,rt):
         post_media_inl  = '<div class="media-inline"><a href="'+cachefile_url+'" target="_blank"><img src="'+cachethumb_url+'" width="'+preview_w+'" height="'+preview_h+'" title="'+media_filename+'"></a></div>'
         # event media
         post_media      = { "url": "", "caption": "", "thumbnail": "", "link": "", "link_target": "_blank", "credit": "" }
-        post_media['url'] = cachethumb_url
-        post_media['thumbnail'] = cachethumb_url
-        post_media['link'] = cachefile_url
-        post_media['caption'] = media_filename
+        #post_media['url'] = cachethumb_url
+        #post_media['thumbnail'] = cachethumb_url
+        #post_media['link'] = cachefile_url
+        #post_media['caption'] = media_filename
+
+    post_comment  = post_headline + post_media_inl + post_comment
 
     bldt = ""
     try:
@@ -296,7 +299,8 @@ def process_4plebs_post(p,rt):
 
     # build html body
     post_commentbody   = '<div class="4plebs_contentbody_' + post_num + ' ">'
-    post_commentbody  += post_backlink + post_comment
+    post_commentbody  += post_backlink
+    post_commentbody  += post_comment
     post_commentbody  += '</div>'
     # post_media_inl
     if rt == "detail":
@@ -423,9 +427,9 @@ def process_4plebs_thread(s):
 
     # add to event
     te['background']= {
-                    #"color": "#d0d0d5",
+                    "color": "#7e2d1a"
                     #"opacity": 50,
-                    "url": "img/cbts2.jpg"
+                    #"url": "img/cbts2.jpg"
     }
     te['media']     = op_media
     te['text']      = re
@@ -542,7 +546,7 @@ description  = """1. The purpose is to log events as they happen over the coming
               5. Shill are now trying to bake fake breads with dead link. REMEMBER to check for mold in new breads<br>
               6. Get Comfy, Believe in your bones that we're riding the greatest timeline in existence."""
 description2  = """Context of news and other events related to Q postings."""
-newtitle    = { "text": { "headline": "The Q Chronicles", "text": description },"media": {"url": "img/cbts.jpg","thumb":   "img/cbts.jpg" }}
+newtitle    = { "text": { "headline": "The Q Chronicles", "text": description },"media": {"url": "img/cbts3.png","thumb":   "img/cbts3.png" }}
 newstitle   = { "text": { "headline": "News vs. Q", "text": description2 }}
 newdata     = { "events": events, "title": newtitle, "eras": eras }
 newsdata    = { "events": news, "title": newstitle, "eras": eras }

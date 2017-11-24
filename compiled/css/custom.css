@@ -5,6 +5,9 @@ html, body {
     margin: 0px;
     margin-top:24px;
 }
+body {
+    background-image: url("../img/strip.png");
+}
 div[class^="4plebs_context_"], div[class*=" 4plebs_context_"] {
     background-color: #f0f0f0;
     font-size: 1.0em;
@@ -74,3 +77,18 @@ div[class^="media-inline"], div[class*=" media-inline"] {
     min-height: 100%;
     height: 100%;
 }
+
+/* style paatches */
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p {
+    color: #7d7d7d;
+
+}
+.tl-timemarker .tl-timemarker-line-left, .tl-timemarker .tl-timemarker-line-right {
+    border-left: 1px solid #9e9e9e;
+}
+.tl-timemarker .tl-timemarker-content-container {
+    border: 1px solid #919191;
+}
+/*.tl-slide-text-only .tl-slide-content-container .tl-slide-content .tl-text {
+    display: contents !important;
+}*/
