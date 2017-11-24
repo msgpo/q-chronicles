@@ -1,0 +1,13 @@
+{
+  "meta": "searchlist",
+  "search": [
+    {
+      "ident": "tripcode",
+      "nameformat": "q-anon-trip-{:04d}.json",
+      "method": "GET",
+      "url": "http://archive.4plebs.org/_/api/chan/search/?boards=pol&email=&username=&tripcode=%21ITPb.qbhqo&capcode=user&subject=&text=&uid=&country=&filename=&image=&deleted=not-deleted&ghost=none&filter=&type=&start=2017-10-28&end=&results=&order=asc",
+      "headers": [],
+      "postData": null
+    }
+  ]
+}

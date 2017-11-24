@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ---------------------------------------------------------
 # built for Q
-# version: 0.0.8
+# version: 0.0.9
 # ---------------------------------------------------------
 # code quality: none
 # code level: below normie, i dont like python
@@ -16,7 +16,7 @@
 # - import servistate-current.json (symlink!) into your chrome (extension needed)
 # - clone a request if new Q posts appear with specific userID
 # - test api request and export servistate file, remove & create symlink pointing to new file
-# - execute tools/convert4plebs.py data/servistate-current.json and look for errors or something
+# - execute tools/convert4plebs.py [fetch|convert] and look for errors or something
 # - update timeline_daily.html's for new content if wanted
 # - q.json is pretty large, rendering could take a while, mozilla quantum (Q!!!) is pretty neat
 # ---------------------------------------------------------
@@ -39,10 +39,11 @@ import pytz
 from HTMLParser import HTMLParser
 from urlparse import urlparse
 from os.path import splitext, basename
+from BeautifulSoup import BeautifulSoup
 
 # commandline brabb
 if len(sys.argv) != 2:
-    print "Usage: %s [file.json]" % sys.argv[0]
+    print "Usage: %s [fetch|convert]" % sys.argv[0]
     sys.exit(0)
 
 # unicode
@@ -167,6 +168,20 @@ def process_4plebs_post(p,rt):
     post_media      = ""
     post_news       = ""
     post_news_head  = ""
+    post_backlink   = ""
+
+    # fetch post and thread if not exist
+    urL_archive_thread  = "http://archive.4plebs.org/pol/thread/" + p['thread_num']
+    url_archive_post    = "http://archive.4plebs.org/pol/thread/" + p['thread_num'] + "/#" + post_num
+    url_json_call       = "http://archive.4plebs.org/_/api/chan/post/?board=pol&num=" + post_num
+    url_json_local      = "json/posts/post_" + post_num + ".json"
+
+    #check if post json exists
+    s         = { "url": '', "file": '' }
+    s['url']  = url_json_call
+    s['file'] = "compiled/" + url_json_local
+    process_4plebs_api(s)
+
 
     # get time in UTC
     post_startDate    = process_4plebs_timestamp(post_timestamp,"02")
@@ -180,12 +195,30 @@ def process_4plebs_post(p,rt):
     if post_comment_raw and len(post_comment_raw) >= 1:
         post_comment  = htmlparser.unescape(post_comment_raw)
         clean_html    = cleanhtml(post_comment)
-        clean_html    = clean_html.replace("\n","")
+        #clean_html    = cleanhtml(post_comment_raw)
+        clean_html    = clean_html.replace("\n"," ")
         # build excerpt (not used now)
-        if len(clean_html) >= 50:
-            post_excerpt     = post_comment[:50]
-        else:
-            post_excerpt     = post_comment[:len(post_comment_raw)-1]
+        #if len(clean_html) >= 50:
+        #    post_excerpt     = post_comment[:50]
+        #else:
+        #    post_excerpt     = post_comment[:len(post_comment_raw)-1]
+
+        #pattern = "\.(?P<sentence>.*?(\?).*?)\."
+        #match = re.search(pattern, clean_html)
+        #if match != None:
+        #    sentence = match.group("sentence")
+        #    print "sentence:",sentence
+        datas = clean_html.split()[:4]
+        print len(datas)
+        if len(datas) >= 1:
+            post_excerpt = datas[0] + " "
+        if len(datas) >= 2:
+            post_excerpt += datas[1] + " "
+        if len(datas) >= 3:
+            post_excerpt += datas[2] + " "
+        if len(datas) >= 4:
+            post_excerpt += datas[3] + " "
+        post_excerpt += "..."
         # html linebreaks
         post_comment     = post_comment.replace("\n","<br>")
     else:
@@ -202,11 +235,17 @@ def process_4plebs_post(p,rt):
         post_title = p['name']  # user faggot
 
     # build some html
+    poster_country   = p["poster_country"]
+    post_country     = '<span class="flag flag-'+poster_country.lower()+'"></span>'
     #post_headline    = '<div class="4plebs_headline">'
     #post_headline   += p['name'] + ' ' + post_trip + '(ID: ' + p['poster_hash'] + ') ' + p['fourchan_date'] + ' No.' + post_num
     #post_headline   += '</div>'
     # add to html return
-    r['headline'] = post_title + post_trip + ' ' + p['fourchan_date']
+    post_headline  = '<div class="4plebs_headline">' + p['name'] + ' ' + post_trip + ' (ID: ' + p['poster_hash'] + ') ' + ' No.' + post_num + ' ' + post_country + '</div>'
+    post_comment  = post_headline + post_comment
+
+
+    r['headline'] = post_excerpt #post_trip + ' ' + p['fourchan_date']
 
     # process media if set
     if p['media']:
@@ -220,7 +259,7 @@ def process_4plebs_post(p,rt):
         cachefile_url   = process_4plebs_media(media_link)
         cachethumb_url  = process_4plebs_media(thumb_link)
         # html (inline)
-        post_media_inl  = '<a href="'+cachefile_url+'" target="_blank"><img src="'+cachethumb_url+'" width="'+preview_w+'" height="'+preview_h+'" title="'+media_filename+'"></a><br>'
+        post_media_inl  = '<div class="media-inline"><a href="'+cachefile_url+'" target="_blank"><img src="'+cachethumb_url+'" width="'+preview_w+'" height="'+preview_h+'" title="'+media_filename+'"></a></div>'
         # event media
         post_media      = { "url": "", "caption": "", "thumbnail": "", "link": "", "link_target": "_blank", "credit": "" }
         post_media['url'] = cachethumb_url
@@ -228,30 +267,27 @@ def process_4plebs_post(p,rt):
         post_media['link'] = cachefile_url
         post_media['caption'] = media_filename
 
-    # build context
-    urL_archive_thread  = "http://archive.4plebs.org/pol/thread/" + p['thread_num']
-    url_archive_post    = "http://archive.4plebs.org/pol/thread/" + p['thread_num'] + "/#" + post_num
-    url_json_call       = "http://archive.4plebs.org/_/api/chan/post/?board=pol&num=" + post_num
-    post_srccontext     = '<div class="4plebs_context_' + post_num + ' ">'
-    post_srccontext    += '<strong>Archive-Info:</strong><br>'
-    post_srccontext    += '  &nbsp;' + p['name'] + ' ' + post_trip + '(ID: ' + p['poster_hash'] + ') ' + p['fourchan_date'] + ' No.' + post_num + '<br>'
-    post_srccontext    += '  &nbsp;Unix Timestamp: '+ str(post_timestamp) +'<br>'
-    post_srccontext    += '  &nbsp;DateTime: '+ raw_utc_timestamp +'<br>'
-    post_srccontext    += '<strong>Online:</strong><br>'
-    post_srccontext    += '  &nbsp;Post:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_archive_post + '">' + url_archive_post + '</a><br>'
-    post_srccontext    += '  &nbsp;Thread: <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">' + urL_archive_thread + '</a><br>'
-    post_srccontext    += '  &nbsp;JSON:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">' + url_json_call + '</a><br>'
-    post_srccontext    += '</div>'
+    bldt = ""
+    try:
+        isbl = p['backlink']
+        bldt = render_backlink(isbl)
+    except KeyError:
+        pass
+    if bldt:
+        # post_backlink
+        post_backlink = bldt
 
-    # news context (excerpt)
-    #post_news_head = post_title
-    #post_news   = '<div class="4plebs_contentbody_' + post_num + ' ">'
-    #post_news  += post_excerpt + " ... <br><br>"
-    #post_news  += '  <div class="4plebs_context_' + post_num + ' ">'
-    #post_news  += '    Post:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_archive_post + '">' + url_archive_post + '</a><br>'
-    #post_news  += '    Thread: <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">' + urL_archive_thread + '</a><br>'
-    #post_news  += '  </div>'
-    #post_news  += '</div>'
+    # build context
+    post_srccontext  = '<div class="4plebs_context_' + post_num + ' ">'
+    post_srccontext += '<strong>Timestamp:</strong> '+ str(post_timestamp) + ' -- ' + raw_utc_timestamp +'<br>'
+    post_srccontext += '<strong>Archive:</strong>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_local + '">JSON</a><br>'
+    post_srccontext += '<strong>Online:</strong>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_archive_post + '">Post</a>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">Thread</a>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">JSON</a>'
+    post_srccontext += '</div>'
+
     # news context (excerpt)
     post_news_head = post_title
     post_news   = post_comment
@@ -260,7 +296,7 @@ def process_4plebs_post(p,rt):
 
     # build html body
     post_commentbody   = '<div class="4plebs_contentbody_' + post_num + ' ">'
-    post_commentbody  += post_comment
+    post_commentbody  += post_backlink + post_comment
     post_commentbody  += '</div>'
     # post_media_inl
     if rt == "detail":
@@ -271,26 +307,13 @@ def process_4plebs_post(p,rt):
     else:
         r['text'] = post_commentbody + "<br>" + post_srccontext
 
-
-    # create dates
-    #
-    #post_startDate              = { "year": "", "month": "", "day": "", "hour": "", "minute": "", "second": "", "millisecond": "", "format": "" }
-    #post_startDate['year']      = dt.strftime('%Y')
-    #post_startDate['month']     = dt.strftime('%m')
-    #post_startDate['day']       = dt.strftime('%d')
-    #post_startDate['hour']      = dt.strftime('%H')
-    #post_startDate['minute']    = dt.strftime('%M')
-    #post_startDate['second']    = dt.strftime('%S')
-    ##post_startDate['millisecond'] = ""
-    #post_startDate['format']    = "'<small>'mmmm d',' yyyy'</small>' - HH:MM:ss TT"
-    #*/
-
     # build return data
     rd = {"start_date": {}, "text": {}, "media": {} }
     rd['text']          = r
     rd['start_date']    = post_startDate
     rd['media']         = post_media
     rd['_identdate']    = post_startDate['_identdate']
+    rd['post_num']      = post_num
     rd['thread_num']    = p['thread_num']
     #d['background'] = {
     #                "color": "#202020",
@@ -306,7 +329,7 @@ def process_4plebs_thread(s):
     # init
     s         = { "url": '', "file": '' }
     s['url']  = "http://archive.4plebs.org/_/api/chan/thread/?board=pol&num=" + str(thread)
-    s['file'] = "4plebs_threads/thread_" + str(thread) + ".json"
+    s['file'] = "compiled/json/threads/thread_" + str(thread) + ".json"
     # call api
     process_4plebs_api(s)
     # reload from local and process thread from to information
@@ -368,16 +391,30 @@ def process_4plebs_thread(s):
         op_trip = op['trip']
     urL_archive_thread  = "http://archive.4plebs.org/pol/thread/" + str(thread)
     url_json_call       = "http://archive.4plebs.org/_/api/chan/thread/?board=pol&num=" + str(thread)
+    url_json_local      = "json/threads/thread_" + str(thread) + ".json"
     post_srccontext     = '<div class="tl-media"><div class="tl-media-content-container tl-media-content-container-text"><div class="tl-media-content">'
     post_srccontext    += '<div class="tl-media-item tl-media-wikipedia 4plebs_threadcontext_' + str(thread) + ' ">'
-    post_srccontext    += '<strong>Archive-Info:</strong><br>'
-    post_srccontext    += '  &nbsp;' + op['name'] + ' ' + op_trip + '(ID: ' + op['poster_hash'] + ') ' + op['fourchan_date'] + ' No.' + op['thread_num'] + '<br>'
-    post_srccontext    += '  &nbsp;Unix Timestamp: '+ str(thread_start) +'<br>'
-    post_srccontext    += '  &nbsp;DateTime: '+ te['start_date']['raw_utc'] +'<br>'
-    post_srccontext    += '<strong>Online:</strong><br>'
-    post_srccontext    += '  &nbsp;Thread: <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">' + urL_archive_thread + '</a><br>'
-    post_srccontext    += '  &nbsp;JSON:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">' + url_json_call + '</a><br>'
+
+#    post_srccontext    += '<strong>Archive-Info:</strong><br>'
+#    post_srccontext    += '  &nbsp;' + op['name'] + ' ' + op_trip + '(ID: ' + op['poster_hash'] + ') ' + op['fourchan_date'] + ' No.' + op['thread_num'] + '<br>'
+#    post_srccontext    += '  &nbsp;Unix Timestamp: '+ str(thread_start) +'<br>'
+#    post_srccontext    += '  &nbsp;DateTime: '+ te['start_date']['raw_utc'] +'<br>'
+#    post_srccontext    += '  &nbsp;JSON:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_local + '">' + url_json_local + '</a><br>'
+#    post_srccontext    += '<strong>Online:</strong><br>'
+#    post_srccontext    += '  &nbsp;Thread: <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">' + urL_archive_thread + '</a><br>'
+#    post_srccontext    += '  &nbsp;JSON:   <a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">' + url_json_call + '</a><br>'
+
+    post_srccontext += '<strong>Timestamp:</strong> '+ str(thread_start) + ' -- ' + te['start_date']['raw_utc'] +'<br>'
+    post_srccontext += '<strong>Archive:</strong>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_local + '">JSON</a><br>'
+    post_srccontext += '<strong>Online:</strong>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + urL_archive_thread + '">Thread</a>'
+    post_srccontext += '&nbsp;&raquo;<a class="tl-makelink" onclick="void(0)" target="_blank" href="' + url_json_call + '">JSON</a>'
+
     post_srccontext    += '</div></div></div></div>'
+
+
+    # build context
 
 
     # text object in text
@@ -392,9 +429,66 @@ def process_4plebs_thread(s):
     }
     te['media']     = op_media
     te['text']      = re
-    te['_identnum'] = thread
+    te['thread_ident'] = thread
 
     return te
+
+def render_backlink(s):
+    # load json
+    p = json.load(open("compiled/json/posts/post_" + s + ".json"))
+    post_comment_raw = p["comment"]
+    post_media_inl   = ""
+    if post_comment_raw and len(post_comment_raw) >= 1:
+        post_comment = htmlparser.unescape(p["comment"])
+        post_comment = post_comment.replace("\n","<br>")
+    else:
+        post_comment = ""
+
+    # post tripper
+    post_trip = ""
+    post_num  = p["num"]
+    if p['trip']:
+        post_trip = ' ' +  p['trip']
+
+    # post title
+    if p['title']:
+        post_title = p['title'] # op faggot
+    else:
+        post_title = p['name']  # user faggot
+
+    # build some html
+    print post_num
+    poster_country   = p["poster_country"]
+    poster_troll_country   = p["troll_country_code"]
+    if poster_country:
+        post_country     = '<span class="flag flag-'+poster_country.lower()+'"></span>'
+    else:
+        # try troll country
+        if poster_troll_country:
+            post_country = '<span class="flag flag-'+poster_troll_country.lower()+'"></span>'
+        else:
+            post_country = '<span class="flag flag-none"></span>'
+
+    post_headline    = '<div class="4plebs_headline">' + p['name'] + ' ' + post_trip + ' (ID: ' + p['poster_hash'] + ') ' + ' No.' + post_num + ' ' + post_country + '</div>'
+
+    # process media if set
+    if p['media']:
+        media           = p['media']
+        media_link      = urllib.unquote(urllib.unquote(media['media_link']))
+        thumb_link      = urllib.unquote(urllib.unquote(media['thumb_link']))
+        preview_w       = urllib.unquote(urllib.unquote(media['preview_w']))
+        preview_h       = urllib.unquote(urllib.unquote(media['preview_h']))
+        media_filename  = urllib.unquote(urllib.unquote(media['media_filename']))
+        # grab files for offline caching
+        cachefile_url   = process_4plebs_media(media_link)
+        cachethumb_url  = process_4plebs_media(thumb_link)
+        # html (inline)
+        post_media_inl  = '<div class="media-inline"><a href="'+cachefile_url+'" target="_blank"><img src="'+cachethumb_url+'" width="'+preview_w+'" height="'+preview_h+'" title="'+media_filename+'"></a></div>'
+
+    post_srccontext  = '<div class="4plebs_backlink_' + s + ' ">'
+    post_srccontext += post_headline + post_media_inl + post_comment
+    post_srccontext += '</div>'
+    return post_srccontext
 
 
 # =======================
@@ -403,16 +497,35 @@ def process_4plebs_thread(s):
 htmlparser = HTMLParser()
 
 # read given servistate file (see chrome plugin how to)
-data = json.load(open(sys.argv[1]))
+action = sys.argv[1]
+servistate_file = "data/servistate-current.json"
+#search_file     = "data/searchresult-tripcode.json"
+plebsUrls = ''
+data_servistate = json.load(open(servistate_file))
+#data_search     = json.load(open(search_file))
 
 # check if servistate file
 try:
-    check = data["servistate"]
+    check = data_servistate["servistate"]
+    plebsUrls = data_servistate["stores"]
 except KeyError:
     sys.exit("error, json not servistate format")
 
+# check if search file
+#try:
+#    check = data_search["0"]["posts"]
+#    meta  = data_search["meta"]["total_found"]
+#    if int(meta) >= 1:
+#        plebsUrls = check
+#    else:
+#        sys.exit("search file has no results")
+#except KeyError:
+#    sys.exit("error, json not search format")
+
+
+# files = [f for f in os.listdir('.') if re.match(r'[0-9]+.*\.jpg', f)]
+
 # init
-plebsUrls    = data["stores"]
 threads      = []  # just bunch of ints
 threads_info = []
 threads_daily= []
@@ -436,16 +549,32 @@ newsdata    = { "events": news, "title": newstitle, "eras": eras }
 newdailyindex = {}
 
 # iterate plebs urls and call api if no file(s)
-for plebs in plebsUrls:
-    if plebs["name"] == "requests":
-        for fetch in plebs["data"]:
-            s           = { "url": '', "file": '' }
-            s['url']    = fetch["url"]
-            s['file']   = "4plebs/" + fetch["name"] + ".json"
-            # call api
-            process_4plebs_api(s)
-            # build timeline data
-            plebFiles.append({ "name": fetch["name"], "file": s['file'] })
+if action == "fetch":
+    for plebs in plebsUrls:
+        if plebs["name"] == "requests":
+            for fetch in plebs["data"]:
+                s           = { "url": '', "file": '' }
+                s['url']    = fetch["url"]
+                s['file']   = "4plebs/" + fetch["name"] + ".json"
+                # call api
+                process_4plebs_api(s)
+                # build timeline data
+                plebFiles.append({ "name": fetch["name"], "file": s['file'] })
+
+# fetch via filenames
+if action == "convert":
+    files = [f for f in os.listdir('4plebs/') if re.match(r'q-anon-[0-9]+.*\.json', f)]
+    files_search = [f for f in os.listdir('4plebs/') if re.match(r'searchresult-tripcode-page-[0-9]+.*\.json', f)]
+    for fetch in files:
+        print "file: " + fetch
+        disassembled = urlparse(fetch)
+        filename, file_ext = splitext(basename(disassembled.path))
+        plebFiles.append({ "name": filename + file_ext, "file": '4plebs/' + fetch })
+    for fetch in files_search:
+        print "file: " + fetch
+        disassembled = urlparse(fetch)
+        filename, file_ext = splitext(basename(disassembled.path))
+        plebFiles.append({ "name": filename + file_ext, "file": '4plebs/' + fetch })
 
 # iterate plebs and process
 for plebs in plebFiles:
@@ -453,14 +582,41 @@ for plebs in plebFiles:
     data = json.load(open(plebs['file']))
     # parse complete timeline
     for npost in data['0']['posts']:
+#       print "parsing:",npost['num']
+        # process context related posts ()
+        # context posts / replies
+        try:
+            cp = npost["comment_processed"]
+        except KeyError:
+            pass
+
+        if cp:
+            soup = BeautifulSoup(htmlparser.unescape(cp.decode("utf-8")))
+            for slink in soup.findAll('a'):
+                # is backlink?
+                isbl = slink.get('class')
+                dtps = slink.get('data-post')
+                if isbl == "backlink":
+                    # fetch this backlink
+                    print "fetching backlink:",dtps
+                    process_4plebs_api({ "url": "http://archive.4plebs.org/_/api/chan/post/?board=pol&num=" + dtps, "file": "compiled/json/posts/post_" + dtps + ".json" })
+                    # add info as media
+                    npost['backlink'] = dtps
+                    break
+
         r = process_4plebs_post(npost,"detail")
         n = process_4plebs_post(npost,"news")
+
         r['group'] = "QAnon"
         # add to global timeline
-        events.append(r)
+        if r not in events:
+            events.append(r)
+
         news.append(n)
         # add to events_daily
-        events_daily.append(r)
+        if r not in events_daily:
+            events_daily.append(r)
+
         # add threads
         if npost['thread_num']:
             item = int(npost['thread_num'])
@@ -511,32 +667,34 @@ for key,value in newdailyindex.iteritems():
             events_per_day.append(npost)
             # iterate threads
             for ndata in threads_info:
-                thidentnum = ndata['_identnum']
+                thidentnum = ndata['thread_ident']
                 if str(thidentnum) == str(identthread):
                     if ndata not in events_per_day:
                         events_per_day.append(ndata)
 
-    # write to daily json
-    rd = json.dumps(newdata_per_day)
+    if action == "convert":
+        # write to daily json
+        rd = json.dumps(newdata_per_day)
+        fh = open(f, 'w')
+        fh.write(rd)
+        fh.close()
+        print "wrote:",f
+
+if action == "convert":
+    # save complete timeline
+    f  = "compiled/json/q.json"
+    rd = json.dumps(newdata)
     fh = open(f, 'w')
     fh.write(rd)
     fh.close()
     print "wrote:",f
 
-# save complete timeline
-f  = "compiled/json/q.json"
-rd = json.dumps(newdata)
-fh = open(f, 'w')
-fh.write(rd)
-fh.close()
-print "wrote:",f
-
-# save news timeline
-f  = "compiled/json/news.json"
-rd = json.dumps(newsdata)
-fh = open(f, 'w')
-fh.write(rd)
-fh.close()
-print "wrote:",f
+    # save news timeline
+    f  = "compiled/json/news.json"
+    rd = json.dumps(newsdata)
+    fh = open(f, 'w')
+    fh.write(rd)
+    fh.close()
+    print "wrote:",f
 
 # kek
